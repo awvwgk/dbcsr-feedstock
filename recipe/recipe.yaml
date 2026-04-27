@@ -3,6 +3,8 @@ schema_version: 1
 context:
   name: dbcsr
   version: "2.9.1"
+  mpi: ${{ mpi if mpi else "openmpi" }}
+  mpi_prefix: mpi_${{ mpi if mpi else "openmpi" }}
 
 package:
   name: ${{ name }}
@@ -15,8 +17,10 @@ source:
       - dbcsr-shared.patch
 
 build:
-  number: 0
-  skip: win
+  number: 1
+  skip:
+    - win
+  string: ${{ mpi_prefix }}_h${{ hash }}_${{ build_number }}
 
 requirements:
   build:
@@ -26,6 +30,7 @@ requirements:
     - ${{ compiler('fortran') }}
     - cmake
     - make
+    - fypp
     - if: linux
       then: libgomp
     - if: osx
@@ -35,14 +40,14 @@ requirements:
       then: libgomp
     - if: osx
       then: llvm-openmp
-    - python
     - libblas
     - liblapack
-    - openmpi
+    - ${{ mpi }}
   run:
-    - python
+    - ${{ mpi }}
   run_exports:
     - ${{ pin_subpackage(name, upper_bound='x') }}
+    - ${{ name }} * ${{ mpi_prefix }}_*
 
 tests:
   - script:
