@@ -14,6 +14,7 @@ cmake -S . -B build \
     -DCMAKE_Fortran_COMPILER=${FC} \
     -DCMAKE_INSTALL_LIBDIR=lib \
     -DCMAKE_INSTALL_PREFIX=${PREFIX} \
+    -DUSE_MPI=ON \
     -DBUILD_TESTING=OFF \
     -DWITH_EXAMPLES=OFF \
     ${CMAKE_ARGS}
